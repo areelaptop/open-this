@@ -6,11 +6,15 @@
 <title>Open This 💖</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  height: 100vh;
+  min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb);
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,112 +22,186 @@ body {
 }
 
 .card {
-  background: white;
-  padding: 30px;
-  border-radius: 25px;
+  width: 90%;
+  max-width: 430px;
+  background: rgba(255,255,255,0.92);
+  padding: 28px;
+  border-radius: 30px;
   text-align: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(255, 20, 147, 0.35);
   z-index: 2;
+  animation: pop 1s ease;
 }
 
 .photo {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  overflow: hidden;
+  width: 210px;
+  height: 210px;
   margin: auto;
-  border: 6px solid hotpink;
+  border-radius: 50%;
+  padding: 7px;
+  background: linear-gradient(45deg, #ff1493, #ffb6c1, #ff69b4);
+  animation: glow 2s infinite alternate;
 }
 
 .photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 
 h1 {
-  color: deeppink;
+  color: #ff1493;
+  margin-bottom: 10px;
 }
 
 #typing {
+  min-height: 90px;
+  color: #444;
   font-size: 18px;
-  color: #333;
-  min-height: 60px;
+  line-height: 1.6;
 }
 
 button {
-  margin-top: 15px;
-  padding: 10px 20px;
   border: none;
-  border-radius: 25px;
-  background: deeppink;
+  border-radius: 30px;
+  padding: 13px 22px;
+  background: #ff1493;
   color: white;
+  font-size: 15px;
   cursor: pointer;
+  margin: 6px;
+  box-shadow: 0 10px 25px rgba(255,20,147,0.35);
 }
 
 button:hover {
-  transform: scale(1.1);
+  transform: scale(1.08);
+}
+
+.secret {
+  display: none;
+  margin-top: 15px;
+  color: #ff1493;
+  font-weight: bold;
+  font-size: 20px;
 }
 
 .heart {
   position: absolute;
-  font-size: 20px;
-  animation: fall 5s linear infinite;
+  top: -50px;
+  font-size: 24px;
+  animation: fall linear infinite;
+  opacity: 0.85;
 }
 
 @keyframes fall {
-  0% { transform: translateY(-100vh); }
-  100% { transform: translateY(100vh); }
+  to {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 12px #ff69b4;
+  }
+  to {
+    box-shadow: 0 0 35px #ff1493;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="heart" style="left:10%;">💖</div>
-<div class="heart" style="left:30%; animation-delay:1s;">💕</div>
-<div class="heart" style="left:50%; animation-delay:2s;">💘</div>
-<div class="heart" style="left:70%; animation-delay:3s;">💗</div>
-<div class="heart" style="left:90%; animation-delay:4s;">💞</div>
-
 <div class="card">
   <div class="photo">
-    <img src="mbg.jpeg">
+    <img src="mbg.jpeg" alt="Foto kamu">
   </div>
 
   <h1>Hai Kamu 💖</h1>
 
   <p id="typing"></p>
 
-  <button onclick="showLove()">Klik Ini 💌</button>
+  <button onclick="nextMessage()">Baca Lagi 💌</button>
+  <button onclick="showSecret()">Kejutan 😳</button>
 
-  <p id="love" style="display:none; color:deeppink; font-weight:bold;">
-    I LOVE YOU ❤️
-  </p>
+  <div id="secret" class="secret">
+    Kamu itu bukan cuma cantik,<br>
+    kamu juga alasan aku senyum hari ini ❤️
+  </div>
 </div>
 
-<audio autoplay loop>
-  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mp3">
-</audio>
-
 <script>
-const text = "Aku nggak jago ngomong romantis... tapi aku selalu jujur kalau soal kamu 💖";
-let i = 0;
+const messages = [
+  "Aku bikin halaman ini khusus buat kamu...",
+  "Karena ada hal yang susah aku bilang langsung.",
+  "Aku cuma mau kamu tahu...",
+  "Kamu itu spesial banget buat aku.",
+  "Dan kalau kamu senyum setelah lihat ini...",
+  "berarti misiku berhasil 💖"
+];
 
-function typingEffect() {
-  if (i < text.length) {
-    document.getElementById("typing").innerHTML += text.charAt(i);
-    i++;
-    setTimeout(typingEffect, 50);
+let messageIndex = 0;
+let charIndex = 0;
+
+function typeText() {
+  const typing = document.getElementById("typing");
+  typing.innerHTML = "";
+
+  charIndex = 0;
+  const text = messages[messageIndex];
+
+  function write() {
+    if (charIndex < text.length) {
+      typing.innerHTML += text.charAt(charIndex);
+      charIndex++;
+      setTimeout(write, 45);
+    }
   }
+
+  write();
 }
 
-typingEffect();
-
-function showLove() {
-  document.getElementById("love").style.display = "block";
+function nextMessage() {
+  messageIndex++;
+  if (messageIndex >= messages.length) {
+    messageIndex = 0;
+  }
+  typeText();
 }
+
+function showSecret() {
+  document.getElementById("secret").style.display = "block";
+}
+
+typeText();
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerHTML = ["💖","💕","💘","💗","💞","❤️"][Math.floor(Math.random() * 6)];
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (3 + Math.random() * 4) + "s";
+  document.body.appendChild(heart);
+
+  setTimeout(() => {
+    heart.remove();
+  }, 7000);
+}
+
+setInterval(createHeart, 300);
 </script>
 
 </body>
